@@ -1,0 +1,38 @@
+version: v1.0
+name: test-aspnet
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+  containers:
+    - name: main
+      image: "mcr.microsoft.com/dotnet/sdk:5.0.400-bionic"
+global_job_config:
+  prologue:
+    commands:
+      - checkout
+      - cd aspnet-core
+blocks:
+  - name: build project
+    task:
+      jobs:
+        - name: "Job #1"
+          commands:
+            - checkout
+  - name: build solution
+    task:
+      jobs:
+        - name: dotnet build
+          commands:
+           - dotnet build
+  - name: push artifact
+    task:
+      jobs:
+        - name: copy files
+          commands:
+            - ls
+promotions:
+  - name: deploy to nginx
+    pipeline_file: deploy.yml
+    auto_promote:
+      when: branch = 'master' AND result = 'passed'

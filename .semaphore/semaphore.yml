@@ -11,7 +11,6 @@ global_job_config:
   prologue:
     commands:
       - checkout
-      - cd aspnet-core
 blocks:
   - name: build project
     task:
